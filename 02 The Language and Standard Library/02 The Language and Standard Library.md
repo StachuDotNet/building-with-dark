@@ -1,5 +1,7 @@
 # The Language and Standard Library
 
+The base types, flow control, and functions available to you throughout your Dark program.
+
 ## Meta
 Dark (will be) a statically-typed functional/imperitive hybrid, based loosely on ML. It's a high level language w/ immutable values, GC, and support for generics / polymorphic types. it's somewhat similar to ocaml/elm, and is influenced by various other languages
 
@@ -23,12 +25,12 @@ the match expression is used to destructure complex types, such as the Option ty
 ### `|>` pipelining
 
 ### imperitive programming isn't supported currently, but planned
-dark does not yet support statements without the extra let. when you hit 'enter' at the end of a line that has a return value, we assume you wan tto make a new expression. 
+Dark does not yet support statements without the extra let. when you hit 'enter' at the end of a line that has a return value, we assume you wan tto make a new expression. 
 
 since that would be the last expression 9and returned) we will automatically add the let _ = to the expression for you
 statements, refs, mutable data structures, etc.
 
-dark does not have a `for` loop. It has `List::map`. This allows you to do something to a collection of objects in a list
+Dark does not have a `for` loop. It has `List::map`. This allows you to do something to a collection of objects in a list
 
 ## Core Types and their Modules
 (intro slide noting core types)
@@ -71,12 +73,7 @@ dark does not have a `for` loop. It has `List::map`. This allows you to do somet
 - `::day`
 - `::month`
 - `::year`
-###  `Crypto::`
-- `::md5`
-- `::sha1hmac`
-- `::sha256`
-- `::sha256hmac`
-- `::sha384`
+
 ### Numbers (`Int`, `Float`) and `Math`
 #### Some operators
 `%` (modulo)
@@ -132,6 +129,9 @@ dark does not have a `for` loop. It has `List::map`. This allows you to do somet
 - `::acos`, `::asin`, `::atan`, `::atan2`
 
 ### `String::`
+
+include context of EGCs
+
 #### Create from Nothing
 - `::newLine()`
 - `::random`
@@ -164,6 +164,9 @@ dark does not have a `for` loop. It has `List::map`. This allows you to do somet
 #### Other
 - `::foreach`
 - `::digest`
+
+#### Future
+String interpolation
 
 ### `List::`
 - Create from scratch
@@ -227,11 +230,14 @@ dark does not have a `for` loop. It has `List::map`. This allows you to do somet
 - `::size`
 - `::maps`
 - ?
+
 ### `Option::`
 - `::map`
 - `::map2`
 - `::withDefault`
 - `::andThen`
+- note about rails
+
 ### `Result::`
 - `::map`
 - `::map2`
@@ -239,23 +245,44 @@ dark does not have a `for` loop. It has `List::map`. This allows you to do somet
 - `::fromOption`, `::toOption`
 - `::andThen`
 - `::withDefault`
+- note about rails
 
 ### Records
+
 ### `UUID::generate()`
+- note the current type
+- Future: remove special type
+
 ### `JSON::`
+- needs properly-formatted JSON
 - `::parse` 
 - `(Str json) -> Result`
+- issue: allow rough json
+
 ### `Bytes::`
-- ::base64Encode
-- ::hexEncode
-- ::length
-### TODOs
+- `::base64Encode`
+- `::hexEncode`
+- `::length`
+- should be `List<byte>`
+
+###  `Crypto::`
+- `::md5`
+- `::sha1hmac`
+- `::sha256`
+- `::sha256hmac`
+- `::sha384`
+
+## TODOs
 - sets
 - units
 - tuples
+- enums? enum flags?
+- characters
+- what else?
+
 
 ## User-Defined Types
-dark currently has limited support for user-defined types. currently we support inline definition of records but do not support defining record types explicitly.
+Dark currently has limited support for user-defined types. currently we support inline definition of records but do not support defining record types explicitly.
 
 record types are actually implemented under the hood, and we intend to use them to support typed datastores, API contracts, and static types.
 
@@ -266,21 +293,22 @@ all types are and will be versioned
 types (will be) defined outside the context of the canvas
 
 ## Creating functions
-simple
-lambdas - anonymous functions
-	`List::map [5, 10, 11] \var -> var + 2`
-don't support functional lang concepts such as partial application and functions as first-class values
-functions don't live on the canvas, but a bit ethereal
-built-in fns are well-versioned: we frequently deprecate old functions and add updates. when we deprecate old versions, your code does NOT change and you keep using the old ones. we intend to support automated refactoring and updating in the future.
+- simple
+- lambdas - anonymous functions
+	- `List::map [5, 10, 11] \var -> var + 2`
+- don't support functional lang concepts such as partial application and functions as first-class values
+- functions don't live on the canvas, but a bit ethereal
+- built-in fns are well-versioned: we frequently deprecate old functions and add updates. when we deprecate old versions, your code does NOT change and you keep using the old ones. we intend to support automated refactoring and updating in the future.
 
 ## Incompletes
-a developer may write programs where some parts are incomplete as they build out the code. structures containing incompletes are themselves incomplete. Incompletes are never returned to end users, cand cannot be stored in a datastore. Returning an incompletefrom an HTTP handler will result in a 500 error
-`emit`
+A developer may write programs where some parts are incomplete as they build out the code. structures containing incompletes are themselves incomplete.
+
+Incompletes are never returned to end users, cand cannot be stored in a datastore. Returning an incomplete from an HTTP handler will result in a 500 error
 
 ## Secrets
 some values are senstive, for example passwords and credit card numbers
 
-currently dark supports the `Password` type which is never saved directly or sent to the editor
+currently Dark supports the `Password` type which is never saved directly or sent to the editor
 
 in the future, Dark will allow you to specify types of senstive values, preventing them from being stored in logs, and allowing a team to limit who has access to these values in the Dark.
 

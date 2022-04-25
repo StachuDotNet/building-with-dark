@@ -1,3 +1,13 @@
-## [1] Secrets
-- `Password::hash`
-- `Password::check`
+## Secrets
+- what are they for?
+- how do you create one?
+- how are they protected, and where are they _not_ protected?
+    - handlers
+    - editor
+    - data store
+    - ?
+- future: update
+- future: delete
+- passwords
+    - `Password::hash`
+    - `Password::check`

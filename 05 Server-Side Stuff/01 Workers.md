@@ -1,24 +1,32 @@
 # [5] Workers - CRON jobs and event stuff
-## [2] Intro
+
+## Intro
+- Dark supports doing work asynchronously outside the context of an HTTP Handler using a Worker. Each worker has a queue of messages, which are processed loosely in-order executing the code within the Worker once for each message. Messages are created by calling `emit` from any other code, and can contain arbitrary event data
+
 - "how do I access the data from `emit` in the worker?"
 	- the data from the `emit` is available in a variable called `event` from within the worker. Its type will be whatever was passed to emit.
-- Dark supports doing work asynchronously outside the context of an HTTP Handler using a Worker. Each worker has a queue of messages, which are processed loosely in-order executing the code within the Worker once for each message. Messages are created by calling `emit` from any other code, and can contain arbitrary event data
-- Workers can be created from the omnibar or sidebar. similar to http handlers, calling `emit` with a nonexstant Worker name will populate that worker int he 404 sidebar section, allowing it to be created. Creating a Worker from a 404 may result in a delay when executing the first message. When a new worker is created, it immediately processed the first message in the queue, but returns Incomplete because no code has been written yet. This casues the message to get automatically retried in 5 minutes, but until then it may look like o messages are being processed
-- workers will automatically process each message. the `event` data passed to `emit` is available in the Worker as a special variable `event`. This can be of any type but is often convenient to use a dict holding many other values.
+- Workers can be created from the omnibar or sidebar.
+- Workers will automatically process each message. the `event` data passed to `emit` is available in the Worker as a special variable `event`. This can be of any type but is often convenient to use a dict holding many other values.
 - Counts
 	- if there are multiple items in the queue, a live count of queue items will appear at the left
 	- the last 10 processed events will show as traces that you can use for debugging purposes
 
-## [30s] Traces
-the trace information on Cron will show the most recent 10 times the Cron has run. a Cron never has input data, so the trace will always say No input parameters.
+## Traces
 
-## [30s] Workers + 404s
-workers receive events via the emit expression and will appear in the 404 section if you emit to a non-existent worker.
+They're stored, and allow you to ...
 
-## [1] Queuing, Cadence Control, and Manual Execution
+The trace information on Cron will show the most recent 10 times the Cron has run. a Cron never has input data, so the trace will always say No input parameters.
+
+## Workers + 404s
+- workers receive events via the emit expression and will appear in the 404 section if you emit to a non-existent worker.
+- similar to http handlers, calling `emit` with a nonexstant Worker name will populate that worker int he 404 sidebar section, allowing it to be created. Creating a Worker from a 404 may result in a delay when executing the first message. When a new worker is created, it immediately processed the first message in the queue, but returns Incomplete because no code has been written yet. This casues the message to get automatically retried in 5 minutes, but until then it may look like o messages are being processed
+
+
+## Queuing, Cadence Control, and Manual Execution
+
 - queuing and a basic example
 - cadence control
-- execuution
+- execution
 	- manual
 	- pause/debug
 - `emit { messageId: Uuid::generate; createdAt: Date::now } "my-worker"`
@@ -38,7 +46,8 @@ workers receive events via the emit expression and will appear in the 404 sectio
 	- Yes. This can be useful to do fan-out of work or batch processing of data.
 	- In fact, you can `emit` to the same Worker that's processing the message
 
-## [30s] Cautions
+## Cautions
+
 - Workers do not guarantee exactly-once delivery.
 	- adding a unique UUID to every message can be useful in keeping track of which messages have been seen by your worker already
 - Crons will not alert you of failures unless you write logic to do so

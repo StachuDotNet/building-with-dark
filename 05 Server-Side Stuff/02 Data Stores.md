@@ -1,40 +1,42 @@
-# [13] Data Stores
+# Data Stores
 
+Dark-hosted place to store your data
 
-## [1] How Data Storage works with dark
+## How Data Storage works with Dark
 Datastores in Dark are key-value based.
 	persistent hash-maps
 
 
-## [1] Creating a data store
-When you create a new datastore, you specify the schema for the record
-Keys
-	The key is a unique identifier for each record, and is always of type `String`.
-	The key is not visible when looking at the Datastore's schema on the canvas.
-	You cannot mark a record field as the key, but you can use the same value for the feld and the key when using Db::set
-	Some common key choices:
-		a unique field (like `userId`)
-			If the field is not already a string use `toString`
-		a unique identifier generated programmatically (`DB::generateKey``)
-Values
-	In the future, datastores will be defined by type, but for now you manually create the schema.
-	Available types are: `String`, `Int`, `Bool`, `Float`, `Password`, `Date`, `UUID`, `Dict`, and `List`s of those
+## Creating a data store
+- When you create a new datastore, you specify the schema for the record
+- Keys
+	- The key is a unique identifier for each record, and is always of type `String`.
+	- The key is not visible when looking at the Datastore's schema on the canvas.
+	- You cannot mark a record field as the key, but you can use the same value for the feld and the key when using Db::set
+	- Some common key choices:
+		- a unique field (like `userId`)
+			- If the field is not already a string use `toString`
+		- a unique identifier generated programmatically (`DB::generateKey``)
+- Values
+	- In the future, datastores will be defined by type, but for now you manually create the schema.
+	- Available types are: `String`, `Int`, `Bool`, `Float`, `Password`, `Date`, `UUID`, `Dict`, and `List`s of those
 
 
-## [1] Inserting some records
+## Inserting some records
 ```
 let key = DB::generateKey // (or uuid or something)
 DB::set { userId : userId; name: "Paul"; pets: [] } key
 ```
 
 
-## [4] Querying
-### [30s] all records
+## Querying
+
+### all records
 - `DB::getAll`
 - `DB::getAllWithKeys`
 - `(DataStore table) -> Dict`
-- 
-### [1] multiple records
+
+### multiple records
 - by key
 	- `DB::getManyWithKeys`
 	- `DB::getMany`
@@ -45,14 +47,14 @@ DB::set { userId : userId; name: "Paul"; pets: [] } key
 	- `DB::queryExactFields`
 	- `DB::queryExactFieldsWithKey`
 
-### [1] single records
+### single records
 - by key
 	- `DB::get`
 - by record field
 	- `DB::queryOneWithExactField`
 	- `DB::queryOneWithExactFieldWithKey`
 
-### [1] by query (experimental SQL compiler)
+### by query (experimental SQL compiler)
 - allows taking a datastore and a block filter
 	- note that this does not check every value in the table but rather is optimized to find data within indexes
 - `DB::query Test \value -> value.name != "Paul"`
@@ -60,30 +62,35 @@ DB::set { userId : userId; name: "Paul"; pets: [] } key
 - `DB::queryOne`
 - `DB::queryOneWithKey`
 - `DB::queryCount` `(datastore table, Block filter)` -> `Int`
-	- returns the number of items from table for which filter returns true. Note that this does not check every value in table, but rather opmized to find data with indexes. errors if query is not compatible (yet).
+  returns the number of items from table for which filter returns true.
+  Note that this does not check every value in table, but rather optimized to find data with indexes.
+  errors if query is not compatible (yet).
 
-### [30s] aggregations
-DB::count
+### aggregations
+- `DB::count`
+
+### meta
+- `DB::keys`
+- `DB::schemaFields`: `(table:DataStore) -> List`
+  fetches all the fieldnames in a table
+- `DB::schema`: `(table:DataStore) -> List`
+  returns an Object representing { fieldName: fieldType } in table
 
 
-## [30s] Deleting records
+## Deleting records
 - DB::delete (key:Str, table:DataStore) -> Nothing
 - delete key from table
 - DB::deleteAll (table:DataStore)->Nothing
 - delete everything from table
 
 
-## [30s] Updating records
+## Updating records
 - DB::set <val:Dict, key:Str, table:DataStore> -> Dict
 - upserts val into table, accessible by key
 
 
-## [1] Creating references between DBs
-- this canvas shows the way to create a reference between two datastores; in this case between Dark employees and their pets: https://darklang.com/a/sample-datastore
-- Users have a pets field, which is a list of strings. The keys for the pets are added to that list
+## Migrations, Locking, and Unlocking
 
-
-## [2] Migrations, Locking, and Unlocking
 - You can edit the DB's schema (col names and types) until it has data in it, at which point it "locks"
 - If you are still in development and don't need the data, creating a REPL and deleting all data in a DB will unlock it (DB::deleteAll)
 - Once you have traffic, datastore migrations are manual.
@@ -100,15 +107,19 @@ DB::getAllWithkeys Blogposts
 ```
 
 
-## [1] Other
-- DB::count
-- DB::keys
-- DB::schemaFields (table:DataStore) -> List
-- fetches all the fieldnames in a table
-- DB::schema (table:DataStore) -> List
-- returns an Object representing { fieldName: fieldType } in table
+## Other
 
 
-## [1] Using external data stores
+## Using external data stores
 
 ## thinking in key-value
+
+### Creating references between DBs
+- this canvas shows the way to create a reference between two datastores; in this case between Dark employees and their pets: https://Darklang.com/a/sample-datastore
+- Users have a pets field, which is a list of strings. The keys for the pets are added to that list
+
+## Future of Data stores
+- other shapes?
+- packages/bindings for external stores
+- migration support
+- refactoring transactions

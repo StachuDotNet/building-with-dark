@@ -1,4 +1,5 @@
-# [3] Version control
+# [3] Version Control
+
 Dark removes the complexity of external version control systems like git. Changes to your code are structured using feature flags, wich conceptually unify version control, deployment, and enabling for users.
 
 We also support unlimited undo and redo on all code, though we do not currently support seeing a list of historical versions
